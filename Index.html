@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#03050d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PranaOS">
+<title>PranaOS — 18 Month Cultivation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#03050d;--bg2:#060912;--bg3:#0a0e1e;
+  --card:#0c1120;--card2:#101828;
+  --b1:rgba(80,90,220,0.10);--b2:rgba(80,90,220,0.20);
+  --text:#cfd6f5;--muted:#606888;--dim:#2e3450;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+#cosmos{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%,rgba(79,70,229,.09) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 30% at 5% 65%,rgba(124,58,237,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 45% 30% at 95% 75%,rgba(37,99,235,.06) 0%,transparent 60%);}
+#app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;padding-bottom:82px;}
+.screen{display:none;flex-direction:column;flex:1;}
+.screen.active{display:flex;}
+.sa{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;}
+.sa::-webkit-scrollbar{width:2px;}
+.sa::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
+.fi{animation:fadeUp .35s ease-out both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sh{padding:52px 20px 12px;}
+.sh-t{font-family:'Cinzel',serif;font-size:18px;font-weight:700;
+  background:linear-gradient(135deg,#c4b5fd,#818cf8,#6366f1);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sh-s{font-size:11px;color:var(--muted);margin-top:3px;}
+
+/* HOME */
+.ht{padding:46px 20px 0;text-align:center;}
+.ey{font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.logo{font-family:'Cinzel Decorative',serif;font-size:24px;font-weight:900;
+  background:linear-gradient(135deg,#e0e7ff,#818cf8,#6366f1);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* ORB */
+.orb-stage{display:flex;justify-content:center;margin:16px 0 4px;}
+.orb-wrap{position:relative;width:165px;height:165px;}
+.orb{width:100%;height:100%;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,rgba(110,86,255,.55) 0%,rgba(40,30,160,.3) 40%,rgba(6,4,20,.85) 100%);
+  border:1px solid rgba(110,86,255,.28);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  box-shadow:0 0 50px rgba(99,102,241,.18),inset 0 0 35px rgba(99,102,241,.12);
+  animation:ob 5s ease-in-out infinite;cursor:pointer;}
+@keyframes ob{
+  0%,100%{box-shadow:0 0 50px rgba(99,102,241,.18),inset 0 0 35px rgba(99,102,241,.12);}
+  50%{box-shadow:0 0 80px rgba(99,102,241,.32),inset 0 0 50px rgba(99,102,241,.22);}}
+.r1,.r2,.r3{position:absolute;border-radius:50%;border:1px solid;}
+.r1{inset:-14px;border-color:rgba(99,102,241,.12);border-style:dashed;animation:sp 16s linear infinite;}
+.r2{inset:-26px;border-color:rgba(139,92,246,.08);animation:sp 28s linear infinite reverse;}
+.r3{inset:-40px;border-color:rgba(59,130,246,.05);border-style:dotted;animation:sp 42s linear infinite;}
+@keyframes sp{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.otn{font-family:'Cinzel Decorative',serif;font-size:10px;font-weight:700;
+  background:linear-gradient(135deg,#c4b5fd,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-align:center;padding:0 16px;line-height:1.3;letter-spacing:.06em;}
+.olv{font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;}
+.oxp{font-family:'Cinzel',serif;font-size:11px;color:#6366f1;margin-top:1px;}
+
+/* TIER BAR */
+.tbs{padding:12px 20px 0;}
+.tbr{display:flex;justify-content:space-between;margin-bottom:5px;}
+.tbl{font-size:10px;color:var(--muted);}
+.tbv{font-size:10px;color:#6366f1;font-weight:600;}
+.tbt{height:3px;background:var(--card2);border-radius:4px;overflow:hidden;}
+.tbf{height:100%;border-radius:4px;
+  background:linear-gradient(90deg,#312e81,#4f46e5,#818cf8);
+  box-shadow:0 0 6px rgba(99,102,241,.7);
+  transition:width 1.2s cubic-bezier(.34,1.56,.64,1);}
+
+/* QUICK STATS */
+.qsr{display:flex;gap:7px;padding:10px 12px 0;}
+.qsc{flex:1;background:var(--card);border:1px solid var(--b1);border-radius:11px;padding:9px 8px;text-align:center;}
+.qsv{font-family:'Cinzel',serif;font-size:14px;font-weight:700;}
+.qsv.a{background:linear-gradient(135deg,#fde68a,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.qsv.b{background:linear-gradient(135deg,#a5b4fc,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.qsv.c{background:linear-gradient(135deg,#6ee7b7,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.qsv.d{background:linear-gradient(135deg,#fda4af,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.qsl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+
+/* STREAK MULT */
+.sm{margin:9px 12px 0;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.18);
+  border-radius:11px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
+.sml{display:flex;align-items:center;gap:8px;}
+.smli{font-size:15px;}
+.sminfo{display:flex;flex-direction:column;}
+.smlb{font-size:11px;color:var(--muted);}
+.smls{font-size:10px;color:#fbbf24;font-weight:600;}
+.smmv{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:#fbbf24;}
+.smml{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+
+.cap{margin:6px 12px 0;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);
+  border-radius:9px;padding:8px 12px;font-size:10px;color:#fca5a5;text-align:center;display:none;}
+
+/* MINI GRID */
+.smg{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:9px 12px 0;}
+.smc{background:var(--card);border:1px solid var(--b1);border-radius:13px;padding:11px 10px;
+  display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .18s;
+  position:relative;overflow:hidden;}
+.smc::before{content:'';position:absolute;inset:0;opacity:0;
+  background:linear-gradient(135deg,var(--gc,rgba(99,102,241,.08)),transparent);transition:opacity .3s;}
+.smc:active{transform:scale(.97);}
+.smc:active::before{opacity:1;}
+.smci{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.05);}
+.smcb{flex:1;min-width:0;}
+.smcn{font-size:10px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.smcs{font-size:9px;color:var(--muted);margin-bottom:3px;}
+.smct{height:3px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.smcb2{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.34,1.56,.64,1);}
+.smcp{font-size:10px;font-weight:700;font-family:'Cinzel',serif;flex-shrink:0;}
+
+/* LOG BTN */
+.lc{padding:11px 12px 0;}
+.lb{width:100%;padding:15px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,#1e1b4b,#312e81,#4338ca,#6366f1);
+  color:white;font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:.1em;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 0 35px rgba(99,102,241,.25);transition:all .2s;}
+.lb:active{transform:scale(.98);}
+
+/* LOG SCREEN */
+.ll{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  padding:13px 20px 5px;font-weight:600;}
+.tc{margin:0 12px 6px;background:var(--card);border:1px solid var(--b1);border-radius:14px;
+  padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer;
+  transition:all .18s;position:relative;overflow:hidden;}
+.tc::before{content:'';position:absolute;inset:0;opacity:0;
+  background:linear-gradient(135deg,rgba(99,102,241,.10),transparent);transition:opacity .25s;}
+.tc:active{transform:scale(.97);}
+.tc:active::before,.tc:hover::before{opacity:1;}
+.tci{font-size:22px;width:38px;text-align:center;flex-shrink:0;}
+.tcb{flex:1;min-width:0;}
+.tcn{font-family:'Cinzel',serif;font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.tcg{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.tcgs{display:flex;flex-wrap:wrap;gap:3px;}
+.tgt{font-size:9px;padding:2px 5px;border-radius:5px;font-weight:600;border:1px solid;letter-spacing:.02em;}
+.tcr{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;}
+.tcm{font-size:10px;color:var(--muted);}
+.tcp{font-size:10px;font-weight:700;font-family:'Cinzel',serif;color:#818cf8;}
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--b2),transparent);margin:3px 14px;}
+
+/* STATS */
+.xr{display:flex;gap:7px;padding:0 12px 10px;}
+.xc{flex:1;background:var(--card);border:1px solid var(--b1);border-radius:11px;padding:9px 7px;text-align:center;}
+.xv{font-family:'Cinzel',serif;font-size:17px;font-weight:700;
+  background:linear-gradient(135deg,#c4b5fd,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.xl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+
+.sfc{margin:0 12px 9px;background:var(--card);border:1px solid var(--b1);border-radius:14px;
+  padding:14px;position:relative;overflow:hidden;}
+.sfc::after{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--sc,#6366f1),transparent);opacity:.5;}
+.sfct{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.sfci{width:37px;height:37px;border-radius:9px;background:rgba(0,0,0,.4);
+  display:flex;align-items:center;justify-content:center;font-size:19px;
+  border:1px solid rgba(255,255,255,.05);flex-shrink:0;}
+.sfcin{flex:1;}
+.sfcn{font-family:'Cinzel',serif;font-size:12px;font-weight:600;color:var(--text);}
+.sfcd{font-size:9px;color:var(--muted);margin-top:2px;line-height:1.4;}
+.sfcrp{font-size:9px;padding:3px 7px;border-radius:6px;font-weight:700;font-family:'Cinzel',serif;flex-shrink:0;}
+.sfcbw{margin-bottom:7px;}
+.sfcbr{display:flex;justify-content:space-between;margin-bottom:3px;}
+.sfcbl{font-size:9px;color:var(--muted);}
+.sfcbv{font-size:10px;font-weight:700;font-family:'Cinzel',serif;}
+.sfcbt{height:6px;background:var(--bg3);border-radius:6px;overflow:hidden;}
+.sfcbf{height:100%;border-radius:6px;transition:width 1s cubic-bezier(.34,1.56,.64,1);}
+.msd{display:flex;gap:3px;margin-bottom:7px;align-items:center;}
+.msdot{width:5px;height:5px;border-radius:50%;background:var(--dim);flex-shrink:0;transition:background .5s;}
+.msdot.h{background:var(--sc,#6366f1);box-shadow:0 0 4px var(--sc,#6366f1);}
+.mslbl{font-size:9px;color:var(--dim);margin-left:4px;}
+.sfcpj{font-size:9px;color:var(--dim);margin-bottom:7px;font-style:italic;}
+.mu{padding:7px 9px;border-radius:7px;background:rgba(251,191,36,.07);
+  border:1px solid rgba(251,191,36,.18);font-size:9px;color:#fde68a;line-height:1.5;
+  font-style:italic;margin-bottom:7px;}
+.sfcts{display:flex;flex-wrap:wrap;gap:3px;}
+.sfct2{font-size:9px;padding:2px 6px;border-radius:5px;
+  background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.14);color:var(--muted);}
+
+/* HISTORY */
+.hi{margin:0 12px 7px;background:var(--card);border:1px solid var(--b1);border-radius:12px;
+  padding:12px;display:flex;gap:10px;align-items:flex-start;}
+.hii{font-size:19px;width:35px;height:35px;background:var(--bg3);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hib{flex:1;}
+.hin{font-size:12px;font-weight:600;color:var(--text);margin-bottom:1px;}
+.him{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.hit{display:flex;flex-wrap:wrap;gap:3px;}
+.hitg{font-size:9px;padding:2px 5px;border-radius:5px;font-weight:600;border:1px solid;}
+.hite{text-align:center;padding:60px 20px;color:var(--muted);}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(6,9,18,.97);backdrop-filter:blur(20px);
+  border-top:1px solid var(--b1);display:flex;padding:10px 6px 28px;}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:7px 2px;border-radius:11px;border:none;background:transparent;cursor:pointer;transition:all .2s;}
+.nb.active{background:rgba(99,102,241,.10);}
+.nbi{font-size:18px;transition:transform .2s;}
+.nb.active .nbi{transform:scale(1.12);}
+.nbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:500;}
+.nb.active .nbl{color:#818cf8;}
+
+/* FLOATS */
+.xpf{position:fixed;pointer-events:none;z-index:500;transform:translateX(-50%);
+  font-family:'Cinzel',serif;font-weight:700;animation:fU 2s ease-out forwards;}
+@keyframes fU{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-80px)}}
+
+/* OVERLAYS */
+.ov{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;
+  background:rgba(3,5,13,.94);backdrop-filter:blur(20px);
+  opacity:0;pointer-events:none;transition:opacity .4s;}
+.ov.show{opacity:1;pointer-events:all;}
+.ovb{text-align:center;padding:44px 28px;max-width:340px;}
+.ovg{font-size:54px;animation:si 1s ease-out;}
+@keyframes si{from{transform:scale(0) rotate(-180deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.ovh{font-family:'Cinzel Decorative',serif;font-size:19px;font-weight:900;
+  background:linear-gradient(135deg,#fde68a,#fbbf24,#f59e0b);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:13px 0 5px;
+  animation:fu2 .6s .4s ease-out both;}
+.ovt{font-family:'Cinzel',serif;font-size:16px;color:#c4b5fd;animation:fu2 .6s .6s ease-out both;}
+.ovd{font-size:11px;color:var(--muted);margin-top:9px;line-height:1.7;animation:fu2 .6s .8s ease-out both;}
+.ovbtn{margin-top:26px;padding:12px 34px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,#1e1b4b,#4338ca);color:white;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;cursor:pointer;
+  animation:fu2 .6s 1s ease-out both;}
+@keyframes fu2{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* BREAKTHROUGH */
+.bto{position:fixed;inset:0;z-index:550;display:flex;align-items:center;justify-content:center;
+  background:rgba(3,5,13,.88);backdrop-filter:blur(16px);
+  opacity:0;pointer-events:none;transition:opacity .35s;}
+.bto.show{opacity:1;pointer-events:all;}
+.btob{text-align:center;padding:38px 26px;max-width:310px;}
+.btic{font-size:44px;animation:si .7s ease-out;}
+.bttl{font-family:'Cinzel Decorative',serif;font-size:15px;font-weight:700;
+  background:linear-gradient(135deg,#fde68a,#fbbf24);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:11px 0 7px;}
+.btst{font-family:'Cinzel',serif;font-size:13px;color:#c4b5fd;margin-bottom:5px;}
+.btds{font-size:10px;color:var(--muted);line-height:1.6;}
+.btin{margin:11px 0 0;padding:9px 11px;border-radius:8px;
+  background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);
+  font-size:9px;color:#a5b4fc;line-height:1.5;font-style:italic;}
+.btbtn{margin-top:18px;padding:9px 26px;border-radius:10px;
+  border:1px solid rgba(99,102,241,.35);background:transparent;
+  color:#818cf8;font-family:'Cinzel',serif;font-size:10px;cursor:pointer;}
+
+/* FLASH */
+.lf{position:fixed;inset:0;z-index:400;pointer-events:none;background:rgba(99,102,241,.06);opacity:0;}
+.lf.go{animation:fg .5s ease-out;}
+@keyframes fg{0%{opacity:1}100%{opacity:0}}
+</style>
+</head>
+<body>
+<canvas id="cosmos"></canvas>
+<div class="mesh"></div>
+<div class="lf" id="lf"></div>
+<div id="app">
+
+<!-- HOME -->
+<div class="screen active fi" id="sHome">
+  <div class="ht">
+    <div class="ey">Breath Cultivation System</div>
+    <div class="logo">PranaOS</div>
+  </div>
+  <div class="orb-stage">
+    <div class="orb-wrap">
+      <div class="r1"></div><div class="r2"></div><div class="r3"></div>
+      <div class="orb" id="orb" onclick="go('stats')">
+        <div class="otn" id="orbN">Unawakened</div>
+        <div class="olv" id="orbL">Tier 0 of 5</div>
+        <div class="oxp" id="orbX">0 pts</div>
+      </div>
+    </div>
+  </div>
+  <div class="tbs">
+    <div class="tbr"><div class="tbl" id="tl">Progress to Initiated</div><div class="tbv" id="tv">0 / 2,000</div></div>
+    <div class="tbt"><div class="tbf" id="tf" style="width:0%"></div></div>
+  </div>
+  <div class="qsr">
+    <div class="qsc"><div class="qsv a" id="qS">0</div><div class="qsl">Streak</div></div>
+    <div class="qsc"><div class="qsv b" id="qSe">0</div><div class="qsl">Sessions</div></div>
+    <div class="qsc"><div class="qsv c" id="qM">0</div><div class="qsl">Hours</div></div>
+    <div class="qsc"><div class="qsv d" id="qR">0</div><div class="qsl">Realms</div></div>
+  </div>
+  <div class="sm">
+    <div class="sml"><div class="smli">🔥</div>
+      <div class="sminfo">
+        <div class="smlb">Streak Multiplier</div>
+        <div class="smls" id="sms">Practice 3 days to unlock</div>
+      </div>
+    </div>
+    <div><div class="smmv" id="smv">×1.0</div><div class="smml">bonus</div></div>
+  </div>
+  <div class="cap" id="cap">Daily cultivation cap reached (10 sessions). This limit is intentional — rest consolidates gains.</div>
+  <div class="smg" id="smg"></div>
+  <div class="lc"><button class="lb" onclick="go('log')">⟡ &nbsp;Log Breathing Session</button></div>
+</div>
+
+<!-- LOG -->
+<div class="screen" id="sLog">
+  <div class="sh"><div class="sh-t">Log Session</div><div class="sh-s">Tap technique after completing · Streak multiplier applies to all gains</div></div>
+  <div class="sa" id="logList"></div>
+</div>
+
+<!-- STATS -->
+<div class="screen" id="sStats">
+  <div class="sh"><div class="sh-t">Cultivation Stats</div><div class="sh-s">1,000 pts per Realm · Each Realm takes months of real practice</div></div>
+  <div class="xr">
+    <div class="xc"><div class="xv" id="xT">0</div><div class="xl">Total Pts</div></div>
+    <div class="xc"><div class="xv" id="xSe">0</div><div class="xl">Sessions</div></div>
+    <div class="xc"><div class="xv" id="xH">0</div><div class="xl">Hours</div></div>
+    <div class="xc"><div class="xv" id="xD">0</div><div class="xl">Days</div></div>
+  </div>
+  <div class="sa" id="statsList"></div>
+</div>
+
+<!-- HISTORY -->
+<div class="screen" id="sHistory">
+  <div class="sh"><div class="sh-t">Session Scroll</div><div class="sh-s">Your complete cultivation record</div></div>
+  <div class="sa" id="histList"></div>
+</div>
+
+</div>
+
+<div class="bnav">
+  <button class="nb active" onclick="go('home',this)" id="nHome"><div class="nbi">🌌</div><div class="nbl">Realm</div></button>
+  <button class="nb" onclick="go('log',this)" id="nLog"><div class="nbi">⟡</div><div class="nbl">Log</div></button>
+  <button class="nb" onclick="go('stats',this)" id="nStats"><div class="nbi">◈</div><div class="nbl">Stats</div></button>
+  <button class="nb" onclick="go('history',this)" id="nHistory"><div class="nbi">📜</div><div class="nbl">Scroll</div></button>
+</div>
+
+<!-- Tier Up -->
+<div class="ov" id="tuov">
+  <div class="ovb">
+    <div class="ovg">✦</div>
+    <div class="ovh">TIER ASCENSION</div>
+    <div class="ovt" id="tuT"></div>
+    <div class="ovd" id="tuD"></div>
+    <button class="ovbtn" onclick="closeTU()">✦ &nbsp;Continue Cultivation</button>
+  </div>
+</div>
+
+<!-- Breakthrough -->
+<div class="bto" id="bto">
+  <div class="btob">
+    <div class="btic" id="bI">⚡</div>
+    <div class="bttl">REALM BREAKTHROUGH</div>
+    <div class="btst" id="bS"></div>
+    <div class="btds" id="bD"></div>
+    <div class="btin" id="bIn"></div>
+    <button class="btbtn" onclick="closeBT()">Continue →</button>
+  </div>
+</div>
+
+<script>
+/* ══ HARD PROGRESSION CONSTANTS ══
+   1,000 pts per realm (not 100)
+   Techniques give 1–4 pts per stat
+   Streak multipliers up to ×3
+   Daily cap 10 sessions
+   Tier thresholds designed for 18 months of serious practice:
+   T1 ~2–3 months · T2 ~11 months · T3 ~25+ months
+*/
+const RPT=1000, CAP=10, MXR=9;
+
+const TIERS=[
+  {n:'Unawakened', th:0,     d:'The breath remains unconscious. Biology runs on default. No stat has been deliberately cultivated.'},
+  {n:'Initiated',  th:2000,  d:'The breath-nervous system connection is awake. The body has begun to respond. Real changes are taking hold — but the path is long.'},
+  {n:'Established',th:8000,  d:'Your nervous system\'s default state is measurably different. Cortisol baseline dropping. HRV rising. People sense a change without knowing why.'},
+  {n:'Cultivated', th:18000, d:'You operate at a level unavailable to the uninitiated. Focus, fire and calm coexist in the same body. This is what 18 months of genuine practice produces.'},
+  {n:'Sovereign',  th:40000, d:'The breath is no longer a practice — it is your nature. You have voluntary access to states most humans never experience.'},
+  {n:'Transcendent',th:100000,d:'Reserved for those who give years. The ancient masters. The lineage holders. You walk among them now.'},
+];
+
+const MT=[
+  {d:0,  m:1.0, l:'No streak bonus yet'},
+  {d:3,  m:1.1, l:'+10% · 3-day streak'},
+  {d:7,  m:1.2, l:'+20% · 7-day streak'},
+  {d:14, m:1.35,l:'+35% · 14-day streak'},
+  {d:30, m:1.5, l:'+50% · 30-day streak'},
+  {d:60, m:1.75,l:'+75% · 60-day streak'},
+  {d:90, m:2.0, l:'×2.0 · 90-day streak'},
+  {d:180,m:2.5, l:'×2.5 · 180-day streak'},
+  {d:365,m:3.0, l:'×3.0 · 365-day streak'},
+];
+
+const RN=['I','II','III','IV','V','VI','VII','VIII','IX'];
+
+const STATS=[
+  {id:'vitality', n:'Vitality',         e:'⚡',c:'#f59e0b',g:'rgba(245,158,11,.28)',
+   desc:'Mitochondrial output & cellular energy generation',
+   ms:['Mitochondria beginning to wake','Morning energy no longer caffeine-dependent','Cellular metabolism restructuring','Sustained energy across full days','Inner fire self-sustaining','Mitochondrial density approaching athlete levels','Pranic energy no longer depletes','Solar plexus fully activated','Peak biological vitality — permanent'],
+   ins:['Cells are beginning to produce ATP more efficiently.','The afternoon crash is now a choice, not a default.','Your body generates more energy than it spends at rest.','You have surpassed the vitality baseline of most people half your age.','The Tummo masters spent decades reaching this state.']},
+  {id:'focus',    n:'Focus',            e:'🎯',c:'#3b82f6',g:'rgba(59,130,246,.28)',
+   desc:'Prefrontal coherence & depth of sustained attention',
+   ms:['Prefrontal cortex activating on demand','Distraction frequency halving','3-hour sessions accessible','Alpha dominance in rest state','On-demand flow states unlocked','Interhemispheric coherence achieved','Surgical clarity under pressure','Cognitive peak at will','Transcendent attention — permanent'],
+   ins:['The prefrontal cortex is your thinking brain. It is slightly more online than yesterday.','Distraction is a nervous system state. You are changing the state.','3 hours of absorbed study is now physiologically accessible.','You have developed task-positive network dominance.','Navy SEALs train this for combat. You train it for something requiring equal endurance.']},
+  {id:'memory',   n:'Memory',           e:'🧠',c:'#8b5cf6',g:'rgba(139,92,246,.28)',
+   desc:'Hippocampal volume & long-term consolidation efficiency',
+   ms:['Hippocampus protected from cortisol damage','NSDR consolidation pathways opening','Recall speed measurably improving','Working memory expanding','Episode retrieval sharpening','Long-range neural networks forming','Sleep consolidation maximized','Deep memory architecture rebuilt','Hippocampal volume in top 5% for age'],
+   ins:['Every NSDR session is active memory formation. You study while lying still.','Chronic stress shrinks the hippocampus. You are reversing this.','Recall speed is improving. The information is there — the retrieval path widens.','The hippocampus can grow. You are growing yours.','Ancient scholars built memory palaces. Yours is being constructed one breath at a time.']},
+  {id:'stress',   n:'Stress Shield',    e:'🌊',c:'#14b8a6',g:'rgba(20,184,166,.28)',
+   desc:'HRV resilience & cortisol regulation capacity',
+   ms:['First cortisol spike reduced by breath','Acute stress recovery halved','Chronic cortisol baseline dropping','HRV entering healthy range','Stress controllable in minutes','Stress no longer alters cognition','Amygdala hijack now rare','Unshakeable calm in chaos','Cortisol fully sovereign'],
+   ins:['HRV is rising. Your nervous system is becoming more resilient.','The stress that used to derail you now passes through you.','Box Breathing stops a cortisol spike in 4 minutes. You know this from direct experience now.','Your baseline calm is measurably higher than it was 100 points ago.','The Stoics spoke of this. Neuroscience measures it. You are living it.']},
+  {id:'fire',     n:'Inner Fire',       e:'🔥',c:'#ef4444',g:'rgba(239,68,68,.28)',
+   desc:'Metabolic heat, immune activation & pranic intensity',
+   ms:['First deliberate sympathetic activation','Body temperature regulation improving','Immune response partially voluntary','Core heat without external stimulus','Wim Hof benchmark approaching','Deliberate fever response accessible','Thermogenic control developed','Full immune sovereignty','Tummo flame permanently lit'],
+   ins:['Tibetan monks used this to survive Himalayan winters. Your first step is warming your hands.','Your immune system is starting to respond to conscious breath. Called impossible 20 years ago.','The 2014 Radboud study proved this is real biology. You are replicating it.','You can now generate body heat deliberately. The monks call it Tummo. Science calls it thermogenesis.','Wim Hof achieved this alone. You have the full science behind it.']},
+  {id:'emotional',n:'Emotional Control',e:'🌀',c:'#06b6d4',g:'rgba(6,182,212,.28)',
+   desc:'Amygdala regulation & response-gap between trigger and reaction',
+   ms:['First observable gap: trigger to reaction','Reactivity reduced 20%','Amygdala no longer hijacking decisions','Response-gap consistently 2–3 seconds','Emotional wisdom replacing reaction','Deep patterns surfacing and dissolving','Traumatic charge releasing through breath','Equanimity as default state','Master-level emotional sovereignty'],
+   ins:['Viktor Frankl found this gap in a concentration camp. You find it through breath.','The amygdala is quieting. Choices are becoming more deliberate.','Others notice you do not react as you used to. They will wonder what changed.','Deep material is beginning to move. This is not regression — this is resolution.','The Stoics, the Buddhists, the Sufis all arrived at this same place.']},
+  {id:'lifeforce',n:'Life Force',       e:'💓',c:'#ec4899',g:'rgba(236,72,153,.28)',
+   desc:'Autonomic tone, heart-brain coherence & HRV as master metric',
+   ms:['HRV baseline beginning to rise','Heart and brain synchronizing','Autonomic balance shifting','Parasympathetic dominance in rest','Heart-brain coherence accessible','HRV in top quartile for age','Mayer wave entrainment achieved','Cardiovascular system of a trained athlete','Full heart-brain-breath unity'],
+   ins:['HRV is the single most important nervous system metric. It is rising.','Heart and brain are beginning to synchronize. Coherent Breathing makes this happen at exactly 0.1 Hz.','The body is shifting from survival to growth mode. You can feel this.','Cardiovascular efficiency improving. The heart does the same work with less effort.','Ancient traditions called this Prana. HRV research calls it autonomic coherence. Same phenomenon.']},
+  {id:'metabolic',n:'Metabolic Power',  e:'🌡️',c:'#84cc16',g:'rgba(132,204,22,.28)',
+   desc:'Cellular ATP production, blood alkalinity & metabolic efficiency',
+   ms:['CO₂ tolerance beginning to improve','Blood alkalinity shifting','ATP production increasing per cell','Metabolic rate elevated post-session','Alkalinity sustained 2+ hours','Digestive function measurably improved','Cellular waste clearance accelerating','Lymphatic flow optimized','Peak metabolic sovereignty'],
+   ins:['Every Kapalabhati expels CO₂ more efficiently than 4 minutes of jogging.','Your blood is slightly more alkaline now than it was 50 points ago.','The lymphatic system has no pump. Breath is its pump. You are moving stagnant cellular waste.','Qi Gong masters say they move qi. Biologists say lymph flow improves. Both are correct.','Mitochondria are producing ATP more efficiently. You have more biological energy per breath.']},
+  {id:'recovery', n:'Recovery Rate',    e:'🧘',c:'#10b981',g:'rgba(16,185,129,.28)',
+   desc:'Parasympathetic dominance, sleep depth & cellular repair speed',
+   ms:['Sleep onset time improving','First deep sleep architecture change','Parasympathetic becoming dominant in rest','Morning grogginess reducing','Cellular repair accelerating at rest','Morning HRV highest values appearing','Glymphatic system clearing brain waste fully','Sleep efficiency reaching 90%+','Recovery rate of a trained yogi'],
+   ins:['4-7-8 is extending your slow-wave sleep. Slow-wave sleep is where memories consolidate.','Parasympathetic nervous system is becoming the dominant state. Survival mode is the exception now.','Morning HRV is the best indicator of recovery quality. It is rising.','The glymphatic system clears brain waste during sleep. Better sleep means a cleaner brain.','Buteyko practitioners report this sleep quality after months of practice. You are on that path.']},
+  {id:'conscious',n:'Consciousness',    e:'🌌',c:'#6366f1',g:'rgba(99,102,241,.28)',
+   desc:'Default mode network flexibility, insight depth & non-ordinary state access',
+   ms:['First glimpse beyond ordinary mental chatter','Default mode network beginning to quiet','Insight frequency increasing','Meditative absorption in minutes','Flow states without substances','Non-ordinary perception through breath','Deep creative-analytical synthesis','Unified field of awareness accessible','The breath has led all the way home'],
+   ins:['The Default Mode Network is your inner narrator. It is getting quieter.','Holotropic Breathwork was designed as a legal replacement for LSD therapy. The mechanism is identical.','Creative insights are distant neural networks connecting. Yours are forming new connections now.','What ancient traditions spent lifetimes pursuing is accessible through consistent practice.','The Upanishads, the Sufis, the Tibetan masters — they all point to where the breath leads.']},
+];
+
+const TECHS=[
+  {id:'nsdr',      n:'NSDR',                  e:'🌌',goal:'Reduce Stress & Consolidate Memory',mins:20,cat:'Non-Sleep Rest', g:{memory:3,recovery:2,stress:1}},
+  {id:'deep',      n:'Deep Breathing',         e:'🌊',goal:'Reduce Stress',                     mins:5, cat:'Foundation',    g:{stress:2,recovery:1,lifeforce:1}},
+  {id:'kapal',     n:'Kapalabhati',            e:'🔥',goal:'Metabolic Activation',              mins:2, cat:'Pranayama',     g:{metabolic:3,vitality:1,fire:1}},
+  {id:'alt',       n:'Alternate Nostril',      e:'🌀',goal:'Balance Brain & Reduce Anxiety',    mins:5, cat:'Pranayama',     g:{focus:2,conscious:1,lifeforce:1}},
+  {id:'478',       n:'4-7-8 Breathing',        e:'💫',goal:'Promote Sleep',                     mins:3, cat:'Foundation',    g:{memory:1,stress:2,recovery:2}},
+  {id:'coherent',  n:'Coherent Breathing',     e:'♾️',goal:'Maximize HRV',                      mins:10,cat:'Foundation',   g:{lifeforce:3,focus:1,memory:1,stress:1}},
+  {id:'box',       n:'Box Breathing',          e:'⬛',goal:'Enhance Focus Under Pressure',       mins:5, cat:'Performance',  g:{focus:2,stress:2,emotional:1}},
+  {id:'diaphragm', n:'Diaphragmatic',          e:'🫁',goal:'Enhance Relaxation',                mins:5, cat:'Foundation',   g:{recovery:2,stress:2,lifeforce:1}},
+  {id:'buteyko',   n:'Buteyko Breathing',      e:'🌿',goal:'Reduce Hyperventilation',           mins:5, cat:'Therapeutic',  g:{stress:3,recovery:1,lifeforce:1}},
+  {id:'holotropic',n:'Holotropic Breathwork',  e:'🌌',goal:'Emotional Healing',                 mins:25,cat:'Advanced',    g:{conscious:4,emotional:3,memory:1}},
+  {id:'tummo',     n:'Tummo Breathing',        e:'🔥',goal:'Increase Energy & Inner Fire',      mins:15,cat:'Advanced',    g:{fire:4,vitality:2,metabolic:1}},
+  {id:'ujjayi',    n:'Ujjayi',                 e:'🌊',goal:'Sustained Concentration',           mins:10,cat:'Pranayama',    g:{focus:2,metabolic:1,recovery:1}},
+  {id:'bhastrika', n:'Bhastrika',              e:'⚡',goal:'Energize the Body',                mins:6, cat:'Pranayama',    g:{vitality:2,metabolic:2,fire:1}},
+  {id:'qigong',    n:'Qi Gong Breathing',      e:'☯️',goal:'Enhance Vitality',                  mins:20,cat:'Eastern',     g:{metabolic:2,recovery:2,lifeforce:2,vitality:1}},
+  {id:'soma',      n:'Soma Breathwork',        e:'🌙',goal:'Focus & Creative Flow',             mins:30,cat:'Advanced',    g:{conscious:3,focus:2,emotional:1,memory:1}},
+  {id:'wimhof',    n:'Wim Hof Method',         e:'❄️',goal:'Immune Response & Energy',          mins:15,cat:'Advanced',    g:{vitality:3,fire:3,stress:1,metabolic:1}},
+  {id:'butreduced',n:'Buteyko Reduced',        e:'🍃',goal:'Enhance Sleep Quality',            mins:15,cat:'Therapeutic', g:{recovery:3,memory:2,stress:1}},
+  {id:'shamanic',  n:'Shamanic Breathing',     e:'🦅',goal:'Creativity & Insight',              mins:15,cat:'Advanced',   g:{conscious:3,emotional:3,memory:1}},
+];
+const CATS=['Foundation','Non-Sleep Rest','Pranayama','Performance','Therapeutic','Eastern','Advanced'];
+
+/* STATE */
+let ST={stats:{},sessions:[],activeDays:[]};
+function ld(){
+  const r=localStorage.getItem('prana_v4');
+  if(r)try{ST=JSON.parse(r);}catch(e){}
+  if(!ST.sessions)ST.sessions=[];
+  if(!ST.activeDays)ST.activeDays=[];
+  STATS.forEach(s=>{
+    if(!ST.stats[s.id])ST.stats[s.id]={pts:0,realm:0,total:0};
+    if(ST.stats[s.id].total===undefined)ST.stats[s.id].total=ST.stats[s.id].realm*RPT+ST.stats[s.id].pts;
+  });
+}
+function sv(){localStorage.setItem('prana_v4',JSON.stringify(ST));}
+function td(){return new Date().toISOString().split('T')[0];}
+function streak(){
+  const days=new Set(ST.activeDays);
+  const t=td();
+  const y=(()=>{const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().split('T')[0];})();
+  if(!days.has(t)&&!days.has(y))return 0;
+  let d=new Date(days.has(t)?t:y),c=0;
+  while(true){const ds=d.toISOString().split('T')[0];if(!days.has(ds))break;c++;d.setDate(d.getDate()-1);}
+  return c;
+}
+function getMult(){
+  const s=streak();let m=MT[0];
+  for(const r of MT){if(s>=r.d)m=r;}
+  return m;
+}
+function todayCount(){
+  const t=td();
+  return ST.sessions.filter(s=>new Date(s.ts).toISOString().split('T')[0]===t).length;
+}
+function totalPts(){
+  return STATS.reduce((sum,s)=>{const st=ST.stats[s.id];return sum+st.realm*RPT+st.pts;},0);
+}
+function curTier(){
+  const tp=totalPts();let t=0;
+  for(let i=TIERS.length-1;i>=0;i--){if(tp>=TIERS[i].th){t=i;break;}}
+  return t;
+}
+function totalRealms(){return STATS.reduce((s,st)=>s+ST.stats[st.id].realm,0);}
+
+/* LOG */
+let pBT=null,pTU=null;
+function logSession(id){
+  if(todayCount()>=CAP){alert('Daily cap reached ('+CAP+' sessions). This limit is intentional — rest consolidates gains.');return;}
+  const tech=TECHS.find(t=>t.id===id);if(!tech)return;
+  const pt=curTier(),mult=getMult().m;
+  const gains={},bts=[];
+  Object.entries(tech.g).forEach(([sid,raw])=>{
+    const pts=parseFloat((raw*mult).toFixed(1));
+    const st=ST.stats[sid];
+    st.pts+=pts;st.total=(st.total||0)+pts;
+    gains[sid]=pts;
+    if(st.pts>=RPT&&st.realm<MXR){st.pts-=RPT;st.realm++;bts.push(sid);}
+  });
+  if(!ST.activeDays.includes(td()))ST.activeDays.push(td());
+  ST.sessions.unshift({id,n:tech.n,e:tech.e,gains,bts,ts:Date.now(),mins:tech.mins,mult});
+  sv();
+  doFlash();spawnGains(gains,mult);
+  const nt=curTier();
+  if(nt>pt){pTU=nt;pBT=bts[0]||null;setTimeout(()=>showTU(nt),700);}
+  else if(bts.length)setTimeout(()=>showBT(bts[0]),600);
+  updateHome();renderMini();updateCap();
+  if(document.getElementById('sStats').classList.contains('active'))renderStats();
+  if(document.getElementById('sHistory').classList.contains('active'))renderHist();
+}
+
+/* ANIM */
+function doFlash(){const e=document.getElementById('lf');e.classList.remove('go');void e.offsetWidth;e.classList.add('go');}
+function spawnGains(g,m){
+  const tp=Object.values(g).reduce((a,b)=>a+b,0);
+  sf(`+${tp.toFixed(1)} pts`,window.innerWidth/2,window.innerHeight*.48,'#c4b5fd',14);
+  if(m>1)sf(`×${m} streak`,window.innerWidth/2,window.innerHeight*.43,'#fbbf24',11);
+  let dl=180;
+  Object.entries(g).forEach(([sid,pts])=>{
+    const stat=STATS.find(s=>s.id===sid);if(!stat)return;
+    setTimeout(()=>sf(`${stat.e}+${pts}`,30+Math.random()*(window.innerWidth-60),window.innerHeight*.38+Math.random()*100,stat.c,11),dl);
+    dl+=140;
+  });
+}
+function sf(t,x,y,c,sz){
+  const e=document.createElement('div');e.className='xpf';
+  e.textContent=t;
+  e.style.cssText=`left:${x}px;top:${y}px;color:${c};font-size:${sz}px;text-shadow:0 0 10px ${c}88;`;
+  document.body.appendChild(e);setTimeout(()=>e.remove(),2100);
+}
+function showTU(t){
+  document.getElementById('tuT').textContent=TIERS[t].n.toUpperCase();
+  document.getElementById('tuD').textContent=TIERS[t].d;
+  document.getElementById('tuov').classList.add('show');
+}
+function closeTU(){document.getElementById('tuov').classList.remove('show');if(pBT){setTimeout(()=>showBT(pBT),350);pBT=null;}}
+function showBT(sid){
+  const stat=STATS.find(s=>s.id===sid);if(!stat)return;
+  const r=ST.stats[sid].realm;
+  document.getElementById('bI').textContent=stat.e;
+  document.getElementById('bS').textContent=`${stat.n} enters Realm ${RN[r-1]||r}`;
+  document.getElementById('bD').textContent=stat.ms[Math.min(r-1,stat.ms.length-1)];
+  document.getElementById('bIn').textContent=`"${stat.ins[Math.min(r-1,stat.ins.length-1)]}"`;
+  document.getElementById('bto').classList.add('show');
+}
+function closeBT(){document.getElementById('bto').classList.remove('show');}
+
+/* HOME */
+function updateHome(){
+  const tp=totalPts(),t=curTier(),td2=TIERS[t],nt=TIERS[t+1];
+  document.getElementById('orbN').textContent=td2.n;
+  document.getElementById('orbL').textContent=`Tier ${t} of ${TIERS.length-1}`;
+  document.getElementById('orbX').textContent=Math.floor(tp).toLocaleString()+' pts';
+  if(nt){
+    const span=nt.th-td2.th,prog=tp-td2.th,pct=Math.min(100,(prog/span)*100);
+    document.getElementById('tl').textContent=`Progress to ${nt.n}`;
+    document.getElementById('tv').textContent=`${Math.floor(tp-td2.th).toLocaleString()} / ${span.toLocaleString()}`;
+    document.getElementById('tf').style.width=pct+'%';
+  }else{
+    document.getElementById('tl').textContent='Maximum Cultivation';
+    document.getElementById('tv').textContent='Transcendent';
+    document.getElementById('tf').style.width='100%';
+  }
+  const s=streak(),m=getMult();
+  document.getElementById('qS').textContent=s;
+  document.getElementById('qSe').textContent=ST.sessions.length;
+  document.getElementById('qM').textContent=(ST.sessions.reduce((a,s)=>a+s.mins,0)/60).toFixed(1);
+  document.getElementById('qR').textContent=totalRealms();
+  document.getElementById('sms').textContent=s>0?m.l:'Practice 3 days to unlock first bonus';
+  document.getElementById('smv').textContent=`×${m.m.toFixed(1)}`;
+}
+function updateCap(){document.getElementById('cap').style.display=todayCount()>=CAP?'block':'none';}
+function renderMini(){
+  document.getElementById('smg').innerHTML=STATS.map(stat=>{
+    const st=ST.stats[stat.id],pct=Math.min(100,Math.round((st.pts/RPT)*100)),r=st.realm;
+    const sub=r>0?`Realm ${RN[r-1]}  ·  ${Math.floor(st.pts)}/${RPT}`:`${Math.floor(st.pts)} / ${RPT} pts`;
+    return `<div class="smc" style="--gc:${stat.g}" onclick="go('stats')">
+      <div class="smci">${stat.e}</div>
+      <div class="smcb"><div class="smcn">${stat.n}</div><div class="smcs">${sub}</div>
+      <div class="smct"><div class="smcb2" style="width:${pct}%;background:linear-gradient(90deg,${stat.c}66,${stat.c})"></div></div></div>
+      <div class="smcp" style="color:${stat.c}">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+/* LOG */
+function renderLog(){
+  const bycat={};TECHS.forEach(t=>{if(!bycat[t.cat])bycat[t.cat]=[];bycat[t.cat].push(t);});
+  const m=getMult().m;
+  document.getElementById('logList').innerHTML=CATS.map(cat=>{
+    if(!bycat[cat])return '';
+    return `<div class="ll">${cat}</div>${bycat[cat].map(t=>{
+      const tp=parseFloat((Object.values(t.g).reduce((a,b)=>a+b,0)*m).toFixed(1));
+      const gtags=Object.entries(t.g).map(([sid,raw])=>{
+        const st=STATS.find(s=>s.id===sid);if(!st)return '';
+        return `<span class="tgt" style="color:${st.c};border-color:${st.c}44;background:${st.c}11">${st.e}+${(raw*m).toFixed(1)}</span>`;
+      }).join('');
+      return `<div class="tc" onclick="logSession('${t.id}')">
+        <div class="tci">${t.e}</div>
+        <div class="tcb"><div class="tcn">${t.n}</div><div class="tcg">${t.goal}</div><div class="tcgs">${gtags}</div></div>
+        <div class="tcr"><div class="tcm">${t.mins}m</div><div class="tcp">+${tp}</div></div>
+      </div>`;
+    }).join('')}`;
+  }).join('<div class="div"></div>');
+}
+
+/* STATS */
+function renderStats(){
+  const tp=totalPts(),ts=ST.sessions.length,th=(ST.sessions.reduce((a,s)=>a+s.mins,0)/60).toFixed(1),ad=new Set(ST.activeDays).size;
+  document.getElementById('xT').textContent=Math.floor(tp).toLocaleString();
+  document.getElementById('xSe').textContent=ts;
+  document.getElementById('xH').textContent=th;
+  document.getElementById('xD').textContent=ad;
+  const recent7=ST.sessions.filter(s=>(Date.now()-s.ts)<7*86400000);
+  document.getElementById('statsList').innerHTML=STATS.map(stat=>{
+    const st=ST.stats[stat.id],r=st.realm,pts=st.pts,pct=Math.min(100,Math.round((pts/RPT)*100));
+    const rl=r>0?`Realm ${RN[r-1]}`:'Dormant';
+    const dots=Array.from({length:10},(_,i)=>{
+      const h=pts>=(i+1)*100;
+      return `<div class="msdot${h?' h':''}" style="${h?'background:'+stat.c+';box-shadow:0 0 4px '+stat.c:''}"></div>`;
+    }).join('');
+    const r7pts=recent7.reduce((a,s)=>a+(s.gains[stat.id]||0),0);
+    const r7avg=r7pts/Math.max(1,Math.min(7,ad));
+    const proj=r7avg>0?`At current pace, Realm ${RN[r]||r+1} in ~${Math.ceil((RPT-pts)/r7avg)} days`:'Log sessions to see breakthrough projection';
+    const mi=r>0?stat.ms[Math.min(r-1,stat.ms.length-1)]:null;
+    const techs=TECHS.filter(t=>t.g[stat.id]).map(t=>t.n);
+    return `<div class="sfc" style="--sc:${stat.c}">
+      <div class="sfct">
+        <div class="sfci">${stat.e}</div>
+        <div class="sfcin"><div class="sfcn">${stat.n}</div><div class="sfcd">${stat.desc}</div></div>
+        <div class="sfcrp" style="color:${stat.c};border:1px solid ${stat.c}44;background:${stat.c}11;border-radius:6px;padding:3px 7px;">${rl}</div>
+      </div>
+      <div class="sfcbw">
+        <div class="sfcbr"><div class="sfcbl">Realm ${r>0?RN[r]||r+1:'I'} · ${Math.floor(pts)} / ${RPT} pts</div>
+        <div class="sfcbv" style="color:${stat.c}">${pct}%</div></div>
+        <div class="sfcbt"><div class="sfcbf" style="width:${pct}%;background:linear-gradient(90deg,${stat.c}55,${stat.c});box-shadow:0 0 8px ${stat.c}55"></div></div>
+      </div>
+      <div class="msd">${dots}<span class="mslbl">${Math.floor(pts/100)}/10 milestones</span></div>
+      <div class="sfcpj">${proj}</div>
+      ${mi?`<div class="mu">✦ ${mi}</div>`:''}
+      <div class="sfcts">${techs.map(n=>`<span class="sfct2">${n}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+/* HISTORY */
+function renderHist(){
+  const list=document.getElementById('histList');
+  if(!ST.sessions.length){
+    list.innerHTML=`<div class="hite"><div style="font-size:36px;opacity:.4;margin-bottom:12px">📜</div><div style="font-size:13px">Your cultivation scroll is empty.<br>Log your first session to begin.</div></div>`;return;
+  }
+  list.innerHTML=ST.sessions.slice(0,80).map(s=>{
+    const d=new Date(s.ts);
+    const ds=d.toLocaleDateString('en-IN',{month:'short',day:'numeric',year:'numeric'})+' · '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    const tp=Object.values(s.gains).reduce((a,b)=>a+b,0).toFixed(1);
+    const gt=Object.entries(s.gains).map(([sid,p])=>{
+      const st=STATS.find(x=>x.id===sid);if(!st)return '';
+      return `<span class="hitg" style="color:${st.c};border-color:${st.c}44;background:${st.c}11">${st.e}+${p}</span>`;
+    }).join('');
+    const bt=s.bts&&s.bts.length?`<span class="hitg" style="color:#fbbf24;border-color:#fbbf2433;background:#fbbf2411">✦ Realm Breakthrough!</span>`:'';
+    const mt=s.mult&&s.mult>1?`<span class="hitg" style="color:#fbbf24;border-color:#fbbf2433;background:#fbbf2411">×${s.mult}</span>`:'';
+    return `<div class="hi"><div class="hii">${s.e}</div>
+      <div class="hib"><div class="hin">${s.n}</div>
+      <div class="him">${ds} · ${s.mins}m · +${tp} pts</div>
+      <div class="hit">${gt}${mt}${bt}</div></div></div>`;
+  }).join('');
+}
+
+/* NAV */
+const SC={home:'sHome',log:'sLog',stats:'sStats',history:'sHistory'};
+const NV={home:'nHome',log:'nLog',stats:'nStats',history:'nHistory'};
+function go(name,btn){
+  Object.values(SC).forEach(id=>document.getElementById(id).classList.remove('active'));
+  Object.values(NV).forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('active');});
+  const s=document.getElementById(SC[name]);
+  s.classList.add('active');s.classList.remove('fi');void s.offsetWidth;s.classList.add('fi');
+  const nb=document.getElementById(NV[name]);if(nb)nb.classList.add('active');
+  if(name==='stats')renderStats();
+  if(name==='history')renderHist();
+  if(name==='home'){updateHome();renderMini();updateCap();}
+}
+
+/* COSMOS */
+function initCosmos(){
+  const cv=document.getElementById('cosmos'),ctx=cv.getContext('2d');
+  let W=cv.width=window.innerWidth,H=cv.height=window.innerHeight;
+  const stars=Array.from({length:130},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.2,a:Math.random(),da:(Math.random()-.5)*.007}));
+  let ss=null;
+  function lss(){ss={x:Math.random()*W*.6,y:Math.random()*H*.35,vx:2+Math.random()*5,vy:.8+Math.random()*2,len:50+Math.random()*90,a:1};setTimeout(lss,6000+Math.random()*10000);}
+  setTimeout(lss,4000);
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    stars.forEach(s=>{s.a=Math.max(.05,Math.min(1,s.a+s.da));if(s.a<=.05||s.a>=1)s.da*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(190,200,255,${s.a*.65})`;ctx.fill();});
+    if(ss){const g=ctx.createLinearGradient(ss.x-ss.vx*ss.len*.2,ss.y-ss.vy*ss.len*.2,ss.x,ss.y);g.addColorStop(0,'transparent');g.addColorStop(1,`rgba(160,170,255,${ss.a})`);ctx.beginPath();ctx.moveTo(ss.x-ss.vx*ss.len*.2,ss.y-ss.vy*ss.len*.2);ctx.lineTo(ss.x,ss.y);ctx.strokeStyle=g;ctx.lineWidth=1.2;ctx.stroke();ss.x+=ss.vx;ss.y+=ss.vy;ss.a-=.022;if(ss.a<=0)ss=null;}
+    requestAnimationFrame(draw);
+  }
+  draw();
+  window.addEventListener('resize',()=>{W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;});
+}
+
+/* MANIFEST */
+function mf(){
+  const m={name:'PranaOS',short_name:'PranaOS',start_url:'./',display:'standalone',background_color:'#03050d',theme_color:'#03050d',icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌌</text></svg>',sizes:'any',type:'image/svg+xml'}]};
+  const b=new Blob([JSON.stringify(m)],{type:'application/json'});
+  const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(b);document.head.appendChild(l);
+}
+
+ld();initCosmos();mf();updateHome();renderMini();renderLog();updateCap();
+</script>
+</body>
+</html>
